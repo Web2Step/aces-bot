@@ -10,7 +10,8 @@ client.on('message', message => {
     	message.reply('pong');
   	}
     if (message.content === '!farm') {
-    	message.reply('http://aces.lol-info.ru/s/'+message.author.id);
+        var nick = message.author.username.slice(1);;
+    	message.reply('http://aces.lol-info.ru/s/'+nick);
   	}
 });
 
