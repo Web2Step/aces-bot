@@ -11,7 +11,7 @@ client.on('message', message => {
   	}
     if (message.content === '!farm') {
         var nick = encodeURI(message.guild.members.get(message.author.id).nickname);
-    	message.channel.send('http://aces.lol-info.ru/s/'+nick);
+    	message.channel.send('Смотри свою стату здесь: http://aces.lol-info.ru/s/'+nick);
   	}
 });
 
