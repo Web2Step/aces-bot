@@ -9,6 +9,9 @@ client.on('message', message => {
     if (message.content === 'ping') {
     	message.reply('pong');
   	}
+    if (message.content === '!farm') {
+    	message.reply('http://aces.lol-info.ru');
+  	}
 });
 
 // THIS  MUST  BE  THIS  WAY
