@@ -16,25 +16,25 @@ client.on('message', message => {
     	
     	var url = 'http://aces.lol-info.ru';
         const https = require('https');
-
-		https.get('http://aces.lol-info.ru', (resp) => {
-		  let data = '';
+ 
+//		https.get('http://aces.lol-info.ru', (resp) => {
+//		  let data = '';
 		 
 		  // A chunk of data has been recieved.
-		  resp.on('data', (chunk) => {
-		    data += chunk;
-		  });
+//		  resp.on('data', (chunk) => {
+//		    data += chunk;
+//		  });
 		 
 		  // The whole response has been received. Print out the result.
-		  resp.on('end', () => {
+//		  resp.on('end', () => {
 		 //   console.log(JSON.parse(data).explanation);
-		 	    message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
+//		 	    message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
 
-		  });
+//		  });
 		 
-		}).on("error", (err) => {
+//		}).on("error", (err) => {
 		  // console.log("Error: " + err.message);
-		});
+//		});
 		    	 
     		
     	//data = data.toString();
