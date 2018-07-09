@@ -1,18 +1,28 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+
 function gettext(url)
 {
-	//Sends a message to Discord
-	$.ajax(
-	{
-		type: "GET",
-		url: url,
-		data: data
-    });
-    return data;
-}
+var http = require('http');
 
+var options = {
+    host: url,
+    path: '/'
+}
+var request = http.request(options, function (res) {
+    var data = '';
+    res.on('data', function (chunk) {
+        data += chunk;
+    });
+   // res.on('end', function () {
+   //     console.log(data);
+
+   // });
+});
+return data;
+}
+ 
 client.on('ready', () => {
     console.log('I am ready!');
 });
@@ -25,8 +35,7 @@ client.on('message', message => {
         var nick = encodeURI(message.guild.members.get(message.author.id).nickname);
     	message.channel.send('Смотри свою стату здесь: http://aces.lol-info.ru/s/'+nick);
     	var url = 'http://aces.lol-info.ru';
-    	//data = gettext(url);
-    	//data = string.data(0, 1000);
+    	data = gettext(url);
 	    message.channel.send('Смотри свою стату:'+data);
     
   	}
