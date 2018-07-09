@@ -3,8 +3,18 @@ const client = new Discord.Client();
 
 
 function gettext(url) {
-var data = 'dddd';
-return url; 
+var http = require('http');
+var options = {
+    host: url,
+    path: '/'
+}
+var request = http.request(options, function (res) {
+    var data = '';
+    res.on('data', function (chunk) {
+        data += chunk;
+    });
+});
+ return request;
 }
  
 client.on('ready', () => {
@@ -20,7 +30,7 @@ client.on('message', message => {
     	message.channel.send('Смотри свою стату здесь: http://aces.lol-info.ru/s/'+nick);
     	var url = 'http://aces.lol-info.ru';
     	data = gettext(url);
-	    message.channel.send('Смотри свою стату:'+data);
+	    message.channel.send('Смотри свою стату: '+data);
     
   	}
 });
