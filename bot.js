@@ -25,8 +25,8 @@ client.on('message', message => {
         var nick = encodeURI(message.guild.members.get(message.author.id).nickname);
     	message.channel.send('Смотри свою стату здесь: http://aces.lol-info.ru/s/'+nick);
     	var url = 'http://aces.lol-info.ru';
-    	data = gettext(url);
-    	data = string.data(0, 1000);
+    	//data = gettext(url);
+    	//data = string.data(0, 1000);
 	    message.channel.send('Смотри свою стату:'+data);
     
   	}
