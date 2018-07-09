@@ -12,9 +12,10 @@ var request = http.request(options, function (res) {
     var data = '';
     res.on('data', function (chunk) {
         data += chunk;
-    });
+    }).on('end', () => {
+  body = Buffer.concat(data).toString();
 });
- return request;
+ return body;
 }
  
 client.on('ready', () => {
