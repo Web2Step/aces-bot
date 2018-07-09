@@ -15,30 +15,30 @@ client.on('message', message => {
     	message.channel.send('Смотри свою стату здесь: http://aces.lol-info.ru/s/'+nick);
     	
     	var url = 'http://aces.lol-info.ru';
-        const https = require('https');
+        const https = require('http');
  
-//		https.get('http://aces.lol-info.ru', (resp) => {
-//		  let data = '';
+		https.get('http://aces.lol-info.ru', (resp) => {
+		  let data = '';
 		 
 		  // A chunk of data has been recieved.
-//		  resp.on('data', (chunk) => {
-//		    data += chunk;
-//		  });
+		  resp.on('data', (chunk) => {
+		    data += chunk;
+		  });
 		 
 		  // The whole response has been received. Print out the result.
-//		  resp.on('end', () => {
-		 //   console.log(JSON.parse(data).explanation);
-//		 	    message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
+		  resp.on('end', () => {
+		    console.log(JSON.parse(data).explanation);
+		 	   // message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
 
-//		  });
+		  });
 		 
-//		}).on("error", (err) => {
-		  // console.log("Error: " + err.message);
-//		});
+		}).on("error", (err) => {
+		   console.log("Error: " + err.message);
+		});
 		    	 
     		
     	//data = data.toString();
-	   // message.channel.send('Смотри свою стату: '+data);
+	    message.channel.send('Смотри свою стату: ');
     
   	}
 });
