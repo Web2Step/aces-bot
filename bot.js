@@ -4,7 +4,7 @@ const client = new Discord.Client();
 
 function gettext(url) {
 var data = 'dddd';
-return data; 
+return url; 
 }
  
 client.on('ready', () => {
