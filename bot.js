@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 
-function gettext(url)
+function gettext(url) {
 var data = 'dddd';
-return data;
+return data; 
 }
  
 client.on('ready', () => {
