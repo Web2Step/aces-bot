@@ -15,9 +15,9 @@ var request = http.request(options, function (res) {
         data += chunk;
     });
     res.on('end', () => {
-  body = Buffer.concat(data).toString();
+  resolve(data);
 });
- return body;
+ return data;
 }
  
 client.on('ready', () => {
