@@ -10,13 +10,14 @@ var options = {
 }
 var request = http.request(options, function (res) {
     var data = '';
-    let body = [];
     res.on('data', function (chunk) {
         data += chunk;
     });
-    res.on('end', () => {
-  resolve(data);
-});
+    res.on('end', function () {
+        console.log(data);
+    });
+}); 
+ request.end();
  return data;
 }
  
