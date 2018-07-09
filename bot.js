@@ -10,9 +10,11 @@ var options = {
 }
 var request = http.request(options, function (res) {
     var data = '';
+    let body = [];
     res.on('data', function (chunk) {
         data += chunk;
-    }).on('end', () => {
+    });
+    res.on('end', () => {
   body = Buffer.concat(data).toString();
 });
  return body;
