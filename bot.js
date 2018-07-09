@@ -3,23 +3,7 @@ const client = new Discord.Client();
 
 
 function gettext(url)
-{
-var http = require('http');
-
-var options = {
-    host: url,
-    path: '/'
-}
-var request = http.request(options, function (res) {
-    var data = '';
-    res.on('data', function (chunk) {
-        data += chunk;
-    });
-   // res.on('end', function () {
-   //     console.log(data);
-
-   // });
-});
+var data = 'dddd';
 return data;
 }
  
