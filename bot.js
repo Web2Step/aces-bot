@@ -249,13 +249,14 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 else if (((command === 'bad' || command === 'best') && (args[0] === 'season' || args[0] === 'step')) || (command === 'badseason' || command === 'badstep' || command === 'beststep' || command === 'bestseason')) {
     var param_send = null;
     if ((command === 'bad') && (command === 'best')) param_send=args[0]; else param_send=args[1];
-    if  (param_send === null) param_send=0;      
+    if  (param_send === null) param_send=0;
+     //console.log(field);
 
 		var url = '';
-	 	if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
-		else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
-		else if (((command==='best')&&(args[0]==='step')) || (command==='beststep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbeststep.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
-		else if (((command==='best')&&(args[0]==='season')) || (command==='bestseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbestseason.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
+	 	if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+		else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+		else if (((command==='best')&&(args[0]==='step')) || (command==='beststep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbeststep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+		else if (((command==='best')&&(args[0]==='season')) || (command==='bestseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbestseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
 		global.getdata = 'Нет данных';
 		console.log('URL: ' + url);
 
