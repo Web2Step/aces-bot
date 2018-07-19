@@ -161,7 +161,7 @@ client.on('message', message => {
 			console.log(error);
 		} else {
 		var info =  body;
-		var icon = 'http://smiles.lol-info.ru/aces.png';
+		//var icon = 'http://smiles.lol-info.ru/aces.png';
 		var avatar = message.author.avatarURL;
 		const embed = new Discord.RichEmbed()
 			  .setTitle('Лучшие игроки клуба "'+info.club_name.toUpperCase()+'"')
@@ -170,7 +170,7 @@ client.on('message', message => {
 				.setDescription("Статистика обновляется не моментально!")
 				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
 				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
-				.setThumbnail(icon)
+				.setThumbnail(info.thumbnail)
 				.setTimestamp()
 				.setURL(info.club_site+'/season')
 				.addField(":boom:Лучшие игроки Сезона:",  info.best_season, true)
