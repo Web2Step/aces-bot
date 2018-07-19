@@ -135,7 +135,6 @@ client.on('message', message => {
 			nick = nick2;
 		}
 		var url = 'http://aces-now.lol-info.ru/api/discord-bot/getbest.php?name='+nick_url;
-		//var url = 'http://aces2016.lol-info.ru';
 		global.getdata = 'Нет данных';
 
 	const request = require('request');
@@ -248,7 +247,10 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 
 // START !BAD SEASON OR STEP
 else if (((command === 'bad' || command === 'best') && (args[0] === 'season' || args[0] === 'step')) || (command === 'badseason' || command === 'badstep' || command === 'beststep' || command === 'bestseason')) {
-		if  (args[1] === null) args[1]=0;
+    var param_send = null;
+    if ((command === 'bad') && (command === 'best')) param_send=args[0]; else param_send=args[1];
+    if  (param_send === null) param_send=0;      
+
 		var url = '';
 	 	if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
 		else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
@@ -422,18 +424,18 @@ else if (command === 'invite' || command === 'INVITE') {
 			nick = nick2;
 		}
 
-	    if(message.member.roles.some(r=>["Клуб", "Mod", "Server Staff", "Proficient"].includes(r.name)) ) {
-                   var Role=message.guild.roles.find('name',config.chan_invite);
+	  if(message.member.roles.some(r=>["Клуб", "Mod", "Server Staff", "Proficient"].includes(r.name)) ) {
+       var Role=message.guild.roles.find('name',config.chan_invite);
 		   // message.channel.send(Role.name); return;
-    		   if (Role.id) message.guild.members.get(message.author.id).addRole(Role); else message.channel.send('HAVENT ROLE!');
+       if (Role.id) message.guild.members.get(message.author.id).addRole(Role); else message.channel.send('HAVENT ROLE!');
 		   message.channel.send(nick+' допущен и ждёт!');
-                return;
-	   } else {
-               message.channel.send(nick+' не допущен!');
-               return;
-            }
+       return;
+	  } else {
+       message.channel.send(nick+' не допущен!');
+       return;
+    }
 
-                message.channel.send(nick+' в поиске стака!');
+    message.channel.send(nick+' в поиске стака!');
 		console.log('поиск стака запущен..');
 }
 // END !INVITE
