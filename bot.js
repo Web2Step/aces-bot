@@ -1,46 +1,591 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+// Here we load the config.json file that contains our token and our prefix values. 
+const config = require("./config.json");
+// config.prefix contains the message prefix.
+
+function timeConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp * 1000);
+  var months = ['Янв','Фев','Мар','Апр','Май','Июнь','Июль','Авг','Сент','Окт','Нояб','Декабрь'];
+  var year = a.getFullYear();
+  //var month = months[a.getMonth()];
+  var month = a.getMonth();
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = date + '.' + month + '.' + year + ' ' + hour + ':' + min;
+  return time;
+}
  
 client.on('ready', () => {
     console.log('I am ready!');
 });
 
 client.on('message', message => {
-    if (message.content === 'ping') {
+   	
+   if(message.author.bot) return;
+   if(message.content.indexOf(config.prefix) !== 0) return;
+	
+   if (message.content === 'ping') {
     	message.reply('pong');
-  	}
-    if (message.content === '!farm') {
-        var nick = encodeURI(message.guild.members.get(message.author.id).nickname);
-    	message.channel.send('Смотри свою стату здесь: http://aces.lol-info.ru/s/'+nick);
-    	
-    	var url = 'http://aces.lol-info.ru';
-        const https = require('http');
- 
-		https.get('http://aces.lol-info.ru', (resp) => {
-		  let data = '';
-		 
-		  // A chunk of data has been recieved.
-		  resp.on('data', (chunk) => {
-		    data += chunk;
-		  });
-		 
-		  // The whole response has been received. Print out the result.
-		  resp.on('end', () => {
-		    console.log(JSON.parse(data).explanation);
-		 	   // message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
-
-		  });
-		 
-		}).on("error", (err) => {
-		   console.log("Error: " + err.message);
-		});
-		    	 
-    		
-    	//data = data.toString();
-	    message.channel.send('Смотри свою стату: ');
+   }
+   
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
     
-  	}
+    if (command === 'farm' || command === 'club') {
+	                var nick_serv = message.author.username;
+			var nick = message.guild.members.get(message.author.id).nickname;
+			var me = message.guild.members.get(message.author.id).nickname;
+	                if (nick === null) { 
+				nick = nick_serv; me = nick_serv;  
+			}
+	    		var nick_url = encodeURI(nick);
+			//const args = message.content.trim().split(/ +/g);
+			//const command = args.toLowerCase();
+			let nick2 = args.join(" ").trim();
+			if (nick2.length > 2) { 
+				nick_url=encodeURI(nick2); 
+				nick = nick2; 
+			}     
+			var url = 'http://aces-now.lol-info.ru/api/discord-bot/getfarm.php?name='+nick_url+'&param='+args[0];
+			//var url = 'http://aces2016.lol-info.ru';
+			global.getdata = 'Нет данных';
+				
+		const request = require('request');
+		var baseRequest = request.defaults({
+			pool: false,
+			agent: false,
+			jar: true,
+			json: true,
+			timeout: 5000,
+			gzip: true,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});    
+				
+		var options = {
+			url: url,
+			method: 'GET'
+		};
+
+		baseRequest(options, function(error, response, body) {
+
+			if (error) {
+				console.log(error);
+			} else {
+				//console.log((new Date().getTime()-start) + ": " + response.statusCode);
+			var info =  body;
+			// var info = JSON.parse(data);
+			// message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
+			var icon = 'http://ddragon.leagueoflegends.com/cdn/'+info.apiImageVersion+'/img/profileicon/'+info.profileIconId+'.png';
+			var avatar = message.author.avatarURL; 
+			var roles = info.roles; 
+			if (roles===null)  roles='нет';
+			var active = info.active; 
+			if (active)  active='В клубе'; 
+			else active='Не в клубе';
+		
+					const embed = new Discord.RichEmbed()
+					.setTitle("Профиль игрока: "+info.name.toUpperCase())
+					.setAuthor(me + ' запрашивает..', avatar)
+					/*
+					* Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
+					*/
+					.setColor(0x00AE86)
+					.setDescription("Клубные характеристики игрока")
+					.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
+					//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
+					.setThumbnail(icon)
+					/*
+					* Takes a Date object, defaults to current date.
+					*/
+					.setTimestamp()
+					.setURL(info.club_site+"/u/"+encodeURI(info.name))
+					//.addField("Фарм Этапа", info.gi_pointsStep,true)
+					/*
+					* Inline fields may not display as inline if the thumbnail and/or image is too big.
+					*/
+					.addField("Дата регистрации:", timeConverter(+info.gi_firstgame + 10800), true)
+					.addField("Дата игры:", timeConverter(+info.gi_lastgame + 10800), true)
+					.addField("Фарм Сезона:", info.gi_pointsAll, true)
+					.addField("Фарм Этапа", info.gi_pointsStep,true)
+					.addField("Игры Сезона:", info.gi_gamesSeason, true)
+					.addField("Игры Этапа", info.gi_gamesStep,true)
+					.addField("Роли:", info.roles_favorite_shortcode, true)
+					.addField("Чемпионы", info.champions_favorite,true)
+					
+					/*
+					* Blank field, useful to create some space.
+					*/
+					//.addBlankField(true)
+					.addField("WinRate Season:", info.gi_winrate+'%', true)
+					.addField("WinRate Step:", info.gi_winrateStep+'%', true)
+					.addField("Ранг игрока:", info.solo_tier+' '+info.solo_rank, true)
+					.addField("Статус:", active, true)
+					.addField(":star2:Достижения:", roles, false);
+		
+					if (command === 'club') embed.setImage(info.main_image);  
+				
+					if (info.relevant<10) {
+						var str2 = '' + message.author.username + ' - Игрока **' + nick + '** нет в Клубе! :thinking:';  	   
+						message.channel.send(str2);			    	   
+					}
+					else message.channel.send({embed});
+				
+			//console.log(response.statusCode); 
+				console.log(body); 
+			}
+		});	    
+	}
+	// END !FARM
+	
+	// START !BEST
+	if (command === 'best' || command === 'BEST') {
+		var nick = message.guild.members.get(message.author.id).nickname;
+		var me = message.guild.members.get(message.author.id).nickname;
+			var nick_url = encodeURI(nick);
+			//const args = message.content.trim().split(/ +/g);
+			//const command = args.toLowerCase();
+		let nick2 = args.join(" ").trim();
+		if (nick2.length > 2) { 
+			nick_url=encodeURI(nick2); 
+			nick = nick2; 
+		}     
+			var url = 'http://aces-now.lol-info.ru/api/discord-bot/getbest.php?name='+nick_url;
+		//var url = 'http://aces2016.lol-info.ru';
+		global.getdata = 'Нет данных';
+			
+	const request = require('request');
+	var baseRequest = request.defaults({
+		pool: false,
+		agent: false,
+		jar: true,
+		json: true,
+		timeout: 5000,
+		gzip: true,
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});    
+			
+	var options = {
+		url: url,
+		method: 'GET'
+	};
+
+	baseRequest(options, function(error, response, body) {
+
+		if (error) {
+			console.log(error);
+		} else {
+		//console.log((new Date().getTime()-start) + ": " + response.statusCode);
+		var info =  body;
+		// var info = JSON.parse(data);
+		// message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
+		//var icon = 'http://ddragon.leagueoflegends.com/cdn/'+info.apiImageVersion+'/img/profileicon/'+info.profileIconId+'.png';
+		var icon = 'http://smiles.lol-info.ru/aces.png';
+		var avatar = message.author.avatarURL; 
+		//var roles = info.roles; 
+		//if (roles===null)  roles='нет';
+		//var active = info.active; 
+		//if (active)  active='В клубе'; 
+		//else active='Не в клубе';
+	
+				const embed = new Discord.RichEmbed()
+				.setTitle('Лучшие игроки клуба "'+info.club_name.toUpperCase()+'"')
+				.setAuthor(me + ' запрашивает..', avatar)
+				/*
+				* Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
+				*/
+				.setColor(0x00CE26)
+				.setDescription("Статистика обновляется не моментально!")
+				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
+				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
+				.setThumbnail(icon)
+				/*
+				* Takes a Date object, defaults to current date.
+				*/
+				.setTimestamp()
+				.setURL(info.club_site+'/season')
+				//.addField("Фарм Этапа", info.gi_pointsStep,true)
+				/*
+				* Inline fields may not display as inline if the thumbnail and/or image is too big.
+				*/
+				.addField(":boom:Лучшие игроки Сезона:",  info.best_season, true)
+				.addBlankField(false)
+				.addField(":boom:Лучшие игроки Этапа:", info.best_step, true)
+				.addBlankField(true)
+				.addField(":boom:Лучшие игроки Дня:", info.best_today, true)
+				
+				message.channel.send({embed});
+				/*
+				* Blank field, useful to create some space.
+				*/
+				//.addBlankField(true)
+					
+				//if (command === 'club') embed.setImage(info.main_image);  
+				/*
+				if (info.relevant<10) {
+					var str2 = '' + message.author.username + ' - Игрока **' + nick + '** нет в Клубе! :thinking:';  	   
+					message.channel.send(str2);			    	   
+				}
+				else message.channel.send({embed});
+			    */
+
+		//console.log(response.statusCode); 
+		console.log(body); 
+		}
+	});	    
+}
+// END !BEST
+	
+// START !BAD
+	if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
+		var nick = message.guild.members.get(message.author.id).nickname;
+		var me = message.guild.members.get(message.author.id).nickname;
+		var nick_url = encodeURI(nick);
+		//const args = message.content.trim().split(/ +/g);
+		//const command = args.toLowerCase();
+		let nick2 = args.join(" ").trim();
+		if (nick2.length > 2) { 
+			nick_url=encodeURI(nick2); 
+			nick = nick2; 
+		}     
+		var url = 'http://aces-now.lol-info.ru/api/discord-bot/getbad.php?name='+nick_url;
+		//var url = 'http://aces2016.lol-info.ru';
+		global.getdata = 'Нет данных';
+			
+	const request = require('request');
+	var baseRequest = request.defaults({
+		pool: false,
+		agent: false,
+		jar: true,
+		json: true,
+		timeout: 5000,
+		gzip: true,
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});    
+			
+	var options = {
+		url: url,
+		method: 'GET'
+	};
+
+	baseRequest(options, function(error, response, body) {
+
+		if (error) {
+			console.log(error);
+		} else {
+		//console.log((new Date().getTime()-start) + ": " + response.statusCode);
+		var info =  body;
+		// var info = JSON.parse(data);
+		// message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
+		//var icon = 'http://ddragon.leagueoflegends.com/cdn/'+info.apiImageVersion+'/img/profileicon/'+info.profileIconId+'.png';
+		var icon = 'http://smiles.lol-info.ru/aces.png';
+		var avatar = message.author.avatarURL; 
+		//var roles = info.roles; 
+		//if (roles===null)  roles='нет';
+		//var active = info.active; 
+		//if (active)  active='В клубе'; 
+		//else active='Не в клубе';
+	
+				const embed = new Discord.RichEmbed()
+				.setTitle('Худшие игроки клуба "'+info.club_name.toUpperCase()+'"')
+				.setAuthor(me + ' запрашивает..', avatar)
+				/*
+				* Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
+				*/
+				.setColor(0x00CE26)
+				.setDescription("Статистика обновляется не моментально!")
+				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
+				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
+				.setThumbnail(icon)
+				/*
+				* Takes a Date object, defaults to current date.
+				*/
+				.setTimestamp()
+				.setURL(info.club_site+'/season')
+				//.addField("Фарм Этапа", info.gi_pointsStep,true)
+				/*
+				* Inline fields may not display as inline if the thumbnail and/or image is too big.
+				*/
+				.addField(":fire:Худшие игроки Сезона:",  info.bad_season, true)
+				.addBlankField(false)
+				.addField(":fire:Худшие игроки Этапа:", info.bad_step, true)
+				.addBlankField(true)
+				.addField(":fire:Худшие игроки Дня:", info.bad_today, true)
+				
+				message.channel.send({embed});
+				/*
+				* Blank field, useful to create some space.
+				*/
+				//.addBlankField(true)
+					
+				//if (command === 'club') embed.setImage(info.main_image);  
+				/*
+				if (info.relevant<10) {
+					var str2 = '' + message.author.username + ' - Игрока **' + nick + '** нет в Клубе! :thinking:';  	   
+					message.channel.send(str2);			    	   
+				}
+				else message.channel.send({embed});
+			    */
+
+		//console.log(response.statusCode); 
+		console.log(body); 
+		}
+	});	    
+}
+// END !BAD
+	
+	
+// START !BAD SEASON OR STEP
+	if (((command === 'bad' || command === 'best') && (args[0] === 'season' || args[0] === 'step')) || (command === 'badseason' || command === 'badstep' || command === 'beststep' || command === 'bestseason')) {
+		var nick = message.guild.members.get(message.author.id).nickname;
+		var me = message.guild.members.get(message.author.id).nickname;
+		var nick_url = encodeURI(nick);
+		let nick2 = args.join(" ").trim();
+		if (nick2.length > 2) { 
+			nick_url=encodeURI(nick2); 
+			nick = nick2; 
+		}     
+		
+		if  (args[1] === null) args[1]=0;
+		var url = '';
+	 	if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
+		else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
+		else if (((command==='best')&&(args[0]==='step')) || (command==='beststep')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbeststep.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
+		else if (((command==='best')&&(args[0]==='season')) || (command==='bestseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbestseason.php?name='+nick_url+'&stage='+args[0]+'&param='+args[1];
+		global.getdata = 'Нет данных';
+		console.log('URL: ' + url); 
+		
+	const request = require('request');
+	var baseRequest = request.defaults({
+		pool: false,
+		agent: false,
+		jar: true,
+		json: true,
+		timeout: 5000,
+		gzip: true,
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});    
+			
+	var options = {
+		url: url,
+		method: 'GET'
+	};
+	baseRequest(options, function(error, response, body) {
+		if (error) {
+			console.log(error);
+		} else {
+		var info =  body;
+		var avatar = message.author.avatarURL; 
+				const embed = new Discord.RichEmbed();
+				if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
+			        else embed.setAuthor(info.author_name, info.author_avatar);
+				if (info.title !== undefined) embed.setTitle(info.title);				
+				if (info.color !== undefined) embed.setColor(info.color);
+				if (info.description !== undefined) embed.setDescription(info.description);
+				if (info.footer !== undefined) embed.setFooter(info.footer, info.footer_icon);
+				if (info.image !== undefined) embed.setImage(info.image);    //- ФОТКА НА ПОЛЭКРАНА!!!
+				if (info.thumbnail !== undefined) embed.setThumbnail(info.thumbnail);
+				if (info.timestamp !== undefined) embed.setTimestamp();
+				if (info.url !== undefined) embed.setURL(info.url);
+							
+			        // -------- СОЗДАТЬ СЕТКУ ЗНАЧЕНИЙ ------- 
+			        var fields = info.fields;
+			        fields.forEach(function(field) {
+				  if (field['insertline'] !== false) embed.addBlankField(field['insertline_group']);   	
+   				  embed.addField(field['title'], field['value'], field['group']);
+				  //console.log(field);	
+				}); 
+				// ----------------------------------------
+			        message.channel.send({embed});
+				console.log(body); 
+		}
+	});	    
+}
+// END !BAD SEASON OR STEP	
+	
+// START !RATING
+	if (command === 'rating' || command === 'RATING') {
+		var nick = message.guild.members.get(message.author.id).nickname;
+		var me = message.guild.members.get(message.author.id).nickname;
+		//const args = message.content.trim().split(/ +/g);
+		//const command = args.toLowerCase();
+		let params = args.join(" ").trim();
+		var params_url = encodeURI(params);		
+		if (params.length > 2) { 
+			params=encodeURI(nick); 
+			//nick = nick2; 
+		}     
+		var url = 'http://aces-now.lol-info.ru/api/discord-bot/getrating.php?name='+nick_url+'&param2='+params_url;
+		//var url = 'http://aces2016.lol-info.ru';
+		global.getdata = 'Нет данных';
+			
+	const request = require('request');
+	var baseRequest = request.defaults({
+		pool: false,
+		agent: false,
+		jar: true,
+		json: true,
+		timeout: 5000,
+		gzip: true,
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});    
+			
+	var options = {
+		url: url,
+		method: 'GET'
+	};
+
+	baseRequest(options, function(error, response, body) {
+
+		if (error) {
+			console.log(error);
+		} else {
+		//console.log((new Date().getTime()-start) + ": " + response.statusCode);
+		var info =  body;
+		console.log(body); 	
+		// var info = JSON.parse(data);
+		// message.channel.send('Смотри свою стату: '+JSON.parse(data).explanation);
+		//var icon = 'http://ddragon.leagueoflegends.com/cdn/'+info.apiImageVersion+'/img/profileicon/'+info.profileIconId+'.png';
+		var icon = 'http://smiles.lol-info.ru/aces.png';
+		var avatar = message.author.avatarURL; 
+		//var roles = info.roles; 
+		//if (roles===null)  roles='нет';
+		//var active = info.active; 
+		//if (active)  active='В клубе'; 
+		//else active='Не в клубе';
+	
+				const embed = new Discord.RichEmbed()
+				.setTitle('Статистика Клубов Сезона')
+				.setAuthor(me + ' запрашивает..', avatar)
+				/*
+				* Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
+				*/
+				.setColor(0x00CE26)
+				.setDescription("Статистика по клубам!")
+				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
+				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
+				.setThumbnail(icon)
+				/*
+				* Takes a Date object, defaults to current date.
+				*/
+				.setTimestamp()
+				.setURL('https://clubs.ru.leagueoflegends.com/rating');
+			        
+				embed.addField("Название клуба №"+info.results[0].rank+'', info.results[0].club.lol_name,true); 
+				embed.addField("Глава клуба:", info.results[0].club.owner.summoner_name,true); 
+			        embed.addField("Число игроков:", info.results[0].club.members_count,true); 
+				embed.addField("Сезоны клуба:", info.results[0].club.seasons_count,true);
+				embed.addField("Очки клуба:", info.results[0].points,true); 
+				embed.addField("Игры клуба:", info.results[0].games,true); 
+				//embed.addField("Завершенные Этапы:", info.results[0].completed_stages,true);
+			        //embed.addField("Ранг:", info.results[0].rank,true);
+				embed.addField("Дата вступления:", info.results[0].joined,false);
+			
+			 	embed.addBlankField(false);
+			
+				embed.addField("Название клуба №"+info.results[1].rank+'', info.results[1].club.lol_name,true); 
+				embed.addField("Глава клуба:", info.results[1].club.owner.summoner_name,true); 
+			        embed.addField("Число игроков:", info.results[1].club.members_count,true); 
+				embed.addField("Сезоны клуба:", info.results[1].club.seasons_count,true);
+				embed.addField("Очки клуба:", info.results[1].points,true); 
+				embed.addField("Игры клуба:", info.results[1].games,true); 
+				//embed.addField("Завершенные Этапы:", info.results[1].completed_stages,true);
+			        //embed.addField("Ранг:", info.results[1].rank,true);
+				embed.addField("Дата вступления:", info.results[1].joined,false);
+			
+			 	embed.addBlankField(false);
+			
+				embed.addField("Название клуба №"+info.results[2].rank+'', info.results[2].club.lol_name,true); 
+				embed.addField("Глава клуба:", info.results[2].club.owner.summoner_name,true); 
+			        embed.addField("Число игроков:", info.results[2].club.members_count,true); 
+				embed.addField("Сезоны клуба:", info.results[2].club.seasons_count+9,true);
+				embed.addField("Очки клуба:", info.results[2].points,true); 
+				embed.addField("Игры клуба:", info.results[2].games,true); 
+				//embed.addField("Завершенные Этапы:", info.results[2].completed_stages,true);
+			        //embed.addField("Ранг:", info.results[2].rank,true);
+				embed.addField("Дата вступления:", info.results[2].joined,true);
+			/*
+ 				embed.addBlankField(true);
+			        
+				embed.addField("Название клуба:", info.results[3].club.lol_name,true); 
+				embed.addField("Глава клуба:", info.results[3].club.owner.summoner_name,true); 
+			        embed.addField("Число игроков:", info.results[3].club.members_count,true); 
+				embed.addField("Сезоны клуба:", info.results[3].club.seasons_count,true);
+				embed.addField("Очки клуба:", info.results[3].points,true); 
+				embed.addField("Игры клуба:", info.results[3].games,true); 
+				//embed.addField("Завершенные Этапы:", info.results[3].completed_stages,true);
+			        embed.addField("Ранг:", info.results[3].rank,true);
+				embed.addField("Дата вступления:", info.results[3].joined,true);
+			*/
+			
+			
+				
+				message.channel.send({embed});
+				/*
+				* Blank field, useful to create some space.
+				*/
+				//.addBlankField(true)
+					
+				//if (command === 'club') embed.setImage(info.main_image);  
+				/*
+				if (info.relevant<10) {
+					var str2 = '' + message.author.username + ' - Игрока **' + nick + '** нет в Клубе! :thinking:';  	   
+					message.channel.send(str2);			    	   
+				}
+				else message.channel.send({embed});
+			    */
+
+		//console.log(response.statusCode); 
+		console.log(body); 
+		}
+	});	    
+}
+// END !RATING	
+	
+// START !INVITE
+if (command === 'invite' || command === 'INVITE') {
+		var nick = message.guild.members.get(message.author.id).nickname;
+		var me = message.guild.members.get(message.author.id).nickname;
+		var nick_url = encodeURI(nick);
+		//const args = message.content.trim().split(/ +/g);
+		//const command = args.toLowerCase();
+		let nick2 = args.join(" ").trim();
+		if (nick2.length > 2) { 
+			nick_url=encodeURI(nick2); 
+			nick = nick2; 
+		}     
+		
+	    if(message.member.roles.some(r=>["Клуб", "Mod", "Server Staff", "Proficient"].includes(r.name)) ) {
+                   var Role=message.guild.roles.find('name',config.chan_invite);
+		   // message.channel.send(Role.name); return;
+    		   if (Role.id) message.guild.members.get(message.author.id).addRole(Role); else message.channel.send('HAVENT ROLE!'); 
+		   message.channel.send(nick+' допущен и ждёт!');		    
+                return;  
+	   } else {
+               message.channel.send(nick+' не допущен!'); 
+               return;    
+            }	
+	
+                message.channel.send(nick+' в поиске стака!'); 
+		console.log('поиск стака запущен..'); 			    
+}
+// END !INVITE	
+
+
+	
 });
 
 // THIS  MUST  BE  THIS  WAY
