@@ -250,7 +250,7 @@ else if (((command === 'bad' || command === 'best') && (args[0] === 'season' || 
     var param_send = null;
     if ((command === 'bad') && (command === 'best')) param_send=args[1]; else param_send=args[0];
     if  (param_send === null) param_send=0;
-     //console.log(field);
+    console.log('0-'+args[0]+'1-'+args[1]);
 
 		var url = '';
 	 	if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = 'http://aces-now.lol-info.ru/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
