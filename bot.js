@@ -228,7 +228,7 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 				.setDescription("Статистика обновляется не моментально!")
 				.setFooter(info.footer, info.footer_icon)
 				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
-				.setThumbnail(info,thumbnail)
+				.setThumbnail(info.thumbnail)
 				.setTimestamp()
 				.setURL(info.club_site+'/season')
 				.addField(":fire:Худшие игроки Сезона:",  info.bad_season, true)
