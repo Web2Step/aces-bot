@@ -168,7 +168,7 @@ client.on('message', message => {
 				.setAuthor(me + ' запрашивает..', avatar)
 				.setColor(0x00CE26)
 				.setDescription("Статистика обновляется не моментально!")
-				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
+				.setFooter(info.footer, info.footer_icon)
 				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
 				.setThumbnail(info.thumbnail)
 				.setTimestamp()
@@ -226,7 +226,7 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 				.setAuthor(me + ' запрашивает..', avatar)
 				.setColor(0x00CE26)
 				.setDescription("Статистика обновляется не моментально!")
-				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
+				.setFooter(info.footer, info.footer_icon)
 				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
 				.setThumbnail(info,thumbnail)
 				.setTimestamp()
