@@ -219,7 +219,7 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 			console.log(error);
 		} else {
 		var info =  body;
-		var icon = 'http://smiles.lol-info.ru/aces.png';
+		//var icon = 'http://smiles.lol-info.ru/aces.png';
 		var avatar = message.author.avatarURL;
 				const embed = new Discord.RichEmbed()
 				.setTitle('Худшие игроки клуба "'+info.club_name.toUpperCase()+'"')
@@ -228,7 +228,7 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 				.setDescription("Статистика обновляется не моментально!")
 				.setFooter("(c) ACES.LOL-INFO.RU CLUB", "http://smiles.lol-info.ru/aces.png")
 				//.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
-				.setThumbnail(icon)
+				.setThumbnail(info,thumbnail)
 				.setTimestamp()
 				.setURL(info.club_site+'/season')
 				.addField(":fire:Худшие игроки Сезона:",  info.bad_season, true)
