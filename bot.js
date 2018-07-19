@@ -248,7 +248,7 @@ else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
 // START !BAD SEASON OR STEP
 else if (((command === 'bad' || command === 'best') && (args[0] === 'season' || args[0] === 'step')) || (command === 'badseason' || command === 'badstep' || command === 'beststep' || command === 'bestseason')) {
     var param_send = null;
-    if ((command === 'bad') && (command === 'best')) param_send=args[0]; else param_send=args[1];
+    if ((command === 'bad') && (command === 'best')) param_send=args[1]; else param_send=args[0];
     if  (param_send === null) param_send=0;
      //console.log(field);
 
