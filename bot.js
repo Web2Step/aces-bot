@@ -55,7 +55,7 @@ function checkTop1(arg) {
                 const embed = new Discord.RichEmbed();
                 //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
                 //else
-                if (info.author_name !== '') embed.setAuthor(info.author_name, info.author_avatar);
+                if (info.author_name !== undefined) embed.setAuthor(info.author_name, info.author_avatar);
                 if (info.title !== undefined) embed.setTitle(info.title);
                 if (info.color !== undefined) embed.setColor(info.color);
                 if (info.description !== undefined) embed.setDescription(info.description);
