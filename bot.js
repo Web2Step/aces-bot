@@ -73,7 +73,7 @@ function checkTop1(arg) {
                 });
                 // ----------------------------------------
                 client.channels.get(info.guild_channel).send({embed});
-            }
+            });
             console.log(body);
         }
     });
