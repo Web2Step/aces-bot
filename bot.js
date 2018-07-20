@@ -87,7 +87,7 @@ function checkTop1(arg) {
 
 client.on('ready', () => {
     console.log('I am ready!');
-    setTimeout(checkTop1, config.timer_check_top1, 'top1');
+    setInterval(checkTop1, config.timer_check_top1, 'top1');
 });
 
 client.on('message', message => {
