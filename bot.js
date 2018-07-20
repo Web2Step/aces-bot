@@ -55,7 +55,7 @@ function checkTop1(arg) {
                 const embed = new Discord.RichEmbed();
                 //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
                 //else
-                if (info.author_name !== false) embed.setAuthor(info.author_name, info.author_avatar);
+                if (info.author_name !== '') embed.setAuthor(info.author_name, info.author_avatar);
                 if (info.title !== undefined) embed.setTitle(info.title);
                 if (info.color !== undefined) embed.setColor(info.color);
                 if (info.description !== undefined) embed.setDescription(info.description);
@@ -427,38 +427,36 @@ else	if (command === 'rating' || command === 'RATING') {
 				.setURL('https://clubs.ru.leagueoflegends.com/rating');
 				embed.addField("Название клуба №"+info.results[0].rank+'', info.results[0].club.lol_name,true);
 				embed.addField("Глава клуба:", info.results[0].club.owner.summoner_name,true);
-			        embed.addField("Число игроков:", info.results[0].club.members_count,true);
+			    embed.addField("Число игроков:", info.results[0].club.members_count,true);
 				embed.addField("Сезоны клуба:", info.results[0].club.seasons_count,true);
 				embed.addField("Очки клуба:", info.results[0].points,true);
 				embed.addField("Игры клуба:", info.results[0].games,true);
 				//embed.addField("Завершенные Этапы:", info.results[0].completed_stages,true);
-        //embed.addField("Ранг:", info.results[0].rank,true);
+                //embed.addField("Ранг:", info.results[0].rank,true);
 				embed.addField("Дата вступления:", info.results[0].joined,false);
-
 			 	embed.addBlankField(false);
-
 				embed.addField("Название клуба №"+info.results[1].rank+'', info.results[1].club.lol_name,true);
 				embed.addField("Глава клуба:", info.results[1].club.owner.summoner_name,true);
-        embed.addField("Число игроков:", info.results[1].club.members_count,true);
+                embed.addField("Число игроков:", info.results[1].club.members_count,true);
 				embed.addField("Сезоны клуба:", info.results[1].club.seasons_count,true);
 				embed.addField("Очки клуба:", info.results[1].points,true);
 				embed.addField("Игры клуба:", info.results[1].games,true);
 				//embed.addField("Завершенные Этапы:", info.results[1].completed_stages,true);
-        //embed.addField("Ранг:", info.results[1].rank,true);
+                //embed.addField("Ранг:", info.results[1].rank,true);
 				embed.addField("Дата вступления:", info.results[1].joined,false);
 
 			 	embed.addBlankField(false);
 
 				embed.addField("Название клуба №"+info.results[2].rank+'', info.results[2].club.lol_name,true);
 				embed.addField("Глава клуба:", info.results[2].club.owner.summoner_name,true);
-        embed.addField("Число игроков:", info.results[2].club.members_count,true);
+                embed.addField("Число игроков:", info.results[2].club.members_count,true);
 				embed.addField("Сезоны клуба:", info.results[2].club.seasons_count+9,true);
 				embed.addField("Очки клуба:", info.results[2].points,true);
 				embed.addField("Игры клуба:", info.results[2].games,true);
 				//embed.addField("Завершенные Этапы:", info.results[2].completed_stages,true);
-        //embed.addField("Ранг:", info.results[2].rank,true);
+                //embed.addField("Ранг:", info.results[2].rank,true);
 				embed.addField("Дата вступления:", info.results[2].joined,true);
-			/*
+			    /*
  				embed.addBlankField(true);
 
 				embed.addField("Название клуба:", info.results[3].club.lol_name,true);
@@ -470,7 +468,7 @@ else	if (command === 'rating' || command === 'RATING') {
 				//embed.addField("Завершенные Этапы:", info.results[3].completed_stages,true);
 			        embed.addField("Ранг:", info.results[3].rank,true);
 				embed.addField("Дата вступления:", info.results[3].joined,true);
-			*/
+			    */
 
 		message.channel.send({embed});
 		console.log(body);
