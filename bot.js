@@ -49,7 +49,7 @@ function checkTop1(arg) {
         if (error) {
             console.log(error);
         } else {
-            var infos =  body;
+            let infos =  body;
             infos.forEach(function(info) {
                 var avatar = message.author.avatarURL;
                 const embed = new Discord.RichEmbed();
