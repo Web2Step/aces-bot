@@ -50,7 +50,9 @@ function checkTop1(arg) {
             console.log(error);
         } else {
             let infos =  body;
+            console.log(body);
             infos.forEach(function(info) {
+                console.log('INFO: '+info);
                 //var avatar = message.author.avatarURL;
                 const embed = new Discord.RichEmbed();
                 //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
@@ -75,7 +77,7 @@ function checkTop1(arg) {
                 // ----------------------------------------
                 client.channels.get(info.guild_channel).send({embed});
             });
-            console.log(body);
+            //console.log(body);
         }
     });
 }
