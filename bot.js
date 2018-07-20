@@ -51,7 +51,7 @@ function checkTop1(arg) {
         } else {
             let infos =  body;
             console.log(body);
-            if (info.length<1) return;
+            if (infos.length<1) return;
             infos.forEach(function(info) {
                 console.log('INFO: '+info);
                 //var avatar = message.author.avatarURL;
