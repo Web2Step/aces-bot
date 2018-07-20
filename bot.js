@@ -51,10 +51,11 @@ function checkTop1(arg) {
         } else {
             let infos =  body;
             infos.forEach(function(info) {
-                var avatar = message.author.avatarURL;
+                //var avatar = message.author.avatarURL;
                 const embed = new Discord.RichEmbed();
-                if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
-                else if (info.author_name !== false) embed.setAuthor(info.author_name, info.author_avatar);
+                //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
+                //else
+                if (info.author_name !== false) embed.setAuthor(info.author_name, info.author_avatar);
                 if (info.title !== undefined) embed.setTitle(info.title);
                 if (info.color !== undefined) embed.setColor(info.color);
                 if (info.description !== undefined) embed.setDescription(info.description);
