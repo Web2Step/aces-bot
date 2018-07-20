@@ -24,7 +24,7 @@ function timeConverter(UNIX_timestamp){
 // ----------- FUNCTION TIMER1 ------------------------------- //
 function checkTop1(arg) {
     console.log(`Checking ${arg} ..`);
-    let url = 'http://aces-now.lol-info.ru/api/discord-bot/showchannel_top1.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+    let url = 'http://aces-now.lol-info.ru/api/discord-bot/showchannel_top1.php?param=top1';
     global.getdata = 'Нет данных';
     console.log('URL TIMER: ' + url);
 
