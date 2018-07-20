@@ -19,9 +19,70 @@ function timeConverter(UNIX_timestamp){
   return time;
 }
 
+
+
+// ----------- FUNCTION TIMER1 ------------------------------- //
 function checkTop1(arg) {
     console.log(`Checking ${arg} ..`);
+    let url = 'http://aces-now.lol-info.ru/api/discord-bot/showchannel_top1.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+    global.getdata = 'Нет данных';
+    console.log('URL TIMER: ' + url);
+
+    const request = require('request');
+    var baseRequest = request.defaults({
+        pool: false,
+        agent: false,
+        jar: true,
+        json: true,
+        timeout: 5000,
+        gzip: true,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    var options = {
+        url: url,
+        method: 'GET'
+    };
+    baseRequest(options, function(error, response, body) {
+        if (error) {
+            console.log(error);
+        } else {
+            var infos =  body;
+            infos.forEach(function(info) {
+                var avatar = message.author.avatarURL;
+                const embed = new Discord.RichEmbed();
+                if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
+                else if (info.author_name !== false) embed.setAuthor(info.author_name, info.author_avatar);
+                if (info.title !== undefined) embed.setTitle(info.title);
+                if (info.color !== undefined) embed.setColor(info.color);
+                if (info.description !== undefined) embed.setDescription(info.description);
+                if (info.footer !== undefined) embed.setFooter(info.footer, info.footer_icon);
+                if (info.image !== undefined) embed.setImage(info.image);    //- ФОТКА НА ПОЛЭКРАНА!!!
+                if (info.thumbnail !== undefined) embed.setThumbnail(info.thumbnail);
+                if (info.timestamp !== undefined) embed.setTimestamp();
+                if (info.url !== undefined) embed.setURL(info.url);
+
+                // -------- СОЗДАТЬ СЕТКУ ЗНАЧЕНИЙ -------
+                var fields = info.fields;
+                fields.forEach(function (field) {
+                    if (field['insertline'] !== false) embed.addBlankField(field['insertline_group']);
+                    embed.addField(field['title'], field['value'], field['group']);
+                    //console.log(field);
+                });
+                // ----------------------------------------
+                client.channels.get(info.guild_channel).send({embed});
+            }
+            console.log(body);
+        }
+    });
 }
+// ----------------- FUNCTION TIMER1 END ------------------------------ //
+
+
+
+
 
 client.on('ready', () => {
     console.log('I am ready!');
