@@ -19,7 +19,11 @@ function timeConverter(UNIX_timestamp){
   return time;
 }
 
-
+// ----------- FUNCTION ISARRAY --------------- //
+isArray = function(a) {
+    return (!!a) && (a.constructor === Array);
+};
+// -------------------------------------------//
 
 // ----------- FUNCTION TIMER1 ------------------------------- //
 function checkTop1(arg) {
@@ -51,7 +55,7 @@ function checkTop1(arg) {
         } else {
             let infos =  body;
             console.log(body);
-            if (infos.length<1) return;
+            if (!isArray(infos)) return;
             infos.forEach(function(info) {
                 console.log('INFO: '+info);
                 //var avatar = message.author.avatarURL;
