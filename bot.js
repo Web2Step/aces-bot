@@ -124,7 +124,7 @@ client.on('message', message => {
     var param_str = args.join(" ").trim();
 
     // ------------- FARM COMMAND BEGIN ----------------- //
-    if (command === 'farm' || command === 'club') {
+    if (command === 'farm' || command === 'club' || command === 'stat') {
 			let nick2 = param_str;
 			if (nick2.length > 2) {
 				nick_url=encodeURI(nick2);
@@ -188,7 +188,7 @@ client.on('message', message => {
 					.addField("Статус:", active, true)
 					.addField(":star2:Достижения:", roles, false);
 
-					if (command === 'club') embed.setImage(info.main_image);
+					if (command === 'club' || command === 'stat') embed.setImage(info.main_image);
 
 					if (info.relevant<10) {
 						var str2 = '' + message.author.username + ' - Игрока **' + nick + '** нет в Клубе! :thinking:';
