@@ -515,8 +515,8 @@ else if (command === 'invite' || command === 'INVITE') {
 
 // START !СОСТАВ турнира
     else if (command === 'состав' && args[0] === 'турнир') {
-    	let role_name = 'tournaments';
-        let role_find = message.guild.roles.find("name", role_find);
+    	let role_name = config.guild_tournament_channel;
+        let role_find = message.guild.roles.find("name", role_name);
         console.log(`Got ${role_find.size} members with that role. Состав: ${role_find}`);
         //message.send(members_role);
     }
