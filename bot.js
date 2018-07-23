@@ -31,7 +31,7 @@ function Belt_Send(channel,info) {
                 //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
                 //else
                 if (info.author_name !== undefined) embed.setAuthor(info.author_name, info.author_avatar);
-                if (info.title !== undefined) embed.setTitle(info.title);
+                if (info.title !== undefined && info.title !== null) embed.setTitle(info.title);
                 if (info.color !== undefined) embed.setColor(info.color);
                 if (info.description !== undefined) embed.setDescription(info.description);
                 if (info.footer !== undefined) embed.setFooter(info.footer, info.footer_icon);
@@ -558,8 +558,8 @@ else if (command === 'invite' || command === 'INVITE') {
             });
             //message.channel.send('Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.: ' + members.join(', '));
             let  info = {};
-            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.'; info.color=null; info.description=members.join(', ');
-            info.footer=null; info.footer_icon=null;
+            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.'; info.color='#daecd7'; info.description="``"+members.join(', ')+"``";
+            info.footer='Турниры клуба'; info.footer_icon='http://smiles.lol-info.ru/aces.png';;
             info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
             info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
             info.fields=[]; // field['title'], field['value'], field['group'], field['insertline']
