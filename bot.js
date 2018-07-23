@@ -557,8 +557,8 @@ else if (command === 'invite' || command === 'INVITE') {
                 if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
             //message.channel.send('Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.: ' + members.join(', '));
-            let info = null;
-            info.author_name=undefined; info.title='Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.'; info.color=null; info.description=members.join(', ');
+            let  info = {};
+            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.'; info.color=null; info.description=members.join(', ');
             info.footer=null; info.footer_icon=null;
             info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
             info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
