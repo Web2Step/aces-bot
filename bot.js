@@ -566,7 +566,7 @@ else if (command === 'invite' || command === 'INVITE') {
             info.fields=[]; // field['title'], field['value'], field['group'], field['insertline']
             //client.channels.get(info.guild_channel).send({embed});
             let channel_belt = message.channel; // вывести туда откуда запросили
-            if (command === 'tournament') channel_belt=config.guild_main_channel; // вывести на главный канал
+            if (command === 'tournament') channel_belt= message.guild.channels.get(config.guild_main_channel); // вывести на главный канал
             Belt_Send(channel_belt,info);
             //channel.send({embed});
         }
