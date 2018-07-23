@@ -517,8 +517,12 @@ else if (command === 'invite' || command === 'INVITE') {
     else if (command === 'состав' && args[0] === 'турнир') {
     	let role_name = config.guild_tournament_channel;
         let role_find = message.guild.roles.find("name", role_name);
-        console.log(`Got ${role_find.size} members with that role. Состав: ${role_find}`);
-        //message.send(members_role);
+        if (role_find.id!==undefined) {
+            console.log(role_find);
+            //message.send(members_role);
+            // allowed access to command
+        }
+        else message.send('Роли '+config.guild_tournament_channel+' не существует!');
     }
 // END !СОСТАВ
 
