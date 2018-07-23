@@ -524,7 +524,7 @@ else if (command === 'invite' || command === 'INVITE') {
             if (!isArray(role_members)) return;
             var members = [];
             role_members.forEach(function(role_member) {
-               if (role_member.nickname === null) members[]=role_member.username; else members[]=role_member.nickname;
+               if (role_member.nickname === null) members.push(role_member.username); else members.push(role_member.nickname);
             });
 
             message.send('Состав ${config.guild_tournament_channel}:'+ members.join());
