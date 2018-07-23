@@ -524,7 +524,7 @@ else if (command === 'invite' || command === 'INVITE') {
             //if (!isArray(role_members)) return;
             var members = [];
             role_members.forEach(function(role_member) {
-                let guild_member=role.GuildMember;
+                let guild_member=role_member.GuildMember;
                 console.log(guild_member+' ###');
                 if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
