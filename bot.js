@@ -519,14 +519,14 @@ else if (command === 'invite' || command === 'INVITE') {
         let role_find = message.guild.roles.find("name", role_name);
         //console.log(role_find);
         if (role_find !== null) {
-            let role_members = message.guild.roles.get(role_find.id).members;
+            var role_members = message.guild.roles.get(role_find.id).members;
             //console.log(role_members);
             //if (!isArray(role_members)) return;
             var members = [];
             role_members.forEach(function(role_member) {
-                let guild_member=role_member.GuildMember;
+                var guild_member=role_member.GuildMember;
                 console.log(guild_member+' ###');
-                if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
+                if (guild_member.nickname === undefined) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
 
             message.send('Состав ${config.guild_tournament_channel}:'+ members.join());
