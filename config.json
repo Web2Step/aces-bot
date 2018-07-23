@@ -3,6 +3,6 @@
   "prefix" : "!",
   "chan_invite" : "INVITE ME PLS!",
   "guild_id" : "999999991231dadasdasddddas23123123123",
-  "guild_tournament_channel" : "Руководство",
+  "guild_tournament_channel" : "Турнир",
   "timer_check_top1": 300000
 }
