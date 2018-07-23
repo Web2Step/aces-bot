@@ -25,6 +25,34 @@ isArray = function(a) {
 };
 // -------------------------------------------//
 
+// ----------- FUNCTION BELT_Send ------------------------------- //
+function Belt_Send(channel,info) {
+                const embed = new Discord.RichEmbed();
+                //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
+                //else
+                if (info.author_name !== undefined) embed.setAuthor(info.author_name, info.author_avatar);
+                if (info.title !== undefined) embed.setTitle(info.title);
+                if (info.color !== undefined) embed.setColor(info.color);
+                if (info.description !== undefined) embed.setDescription(info.description);
+                if (info.footer !== undefined) embed.setFooter(info.footer, info.footer_icon);
+                if (info.image !== undefined) embed.setImage(info.image);    //- ФОТКА НА ПОЛЭКРАНА!!!
+                if (info.thumbnail !== undefined) embed.setThumbnail(info.thumbnail);
+                if (info.timestamp !== undefined) embed.setTimestamp();
+                if (info.url !== undefined) embed.setURL(info.url);
+
+                // -------- СОЗДАТЬ СЕТКУ ЗНАЧЕНИЙ -------
+                var fields = info.fields;
+                fields.forEach(function (field) {
+                    if (field['insertline'] !== false) embed.addBlankField(field['insertline_group']);
+                    embed.addField(field['title'], field['value'], field['group']);
+                    //console.log(field);
+                });
+                // ----------------------------------------
+                //client.channels.get(info.guild_channel).send({embed});
+                channel.send({embed});
+}
+// ----------------- FUNCTION BELT END ------------------------------ //
+
 // ----------- FUNCTION TIMER1 ------------------------------- //
 function checkTop1(arg) {
     console.log(`Checking ${arg} ..`);
@@ -528,9 +556,16 @@ else if (command === 'invite' || command === 'INVITE') {
                 console.log(guild_member+' ###');
                 if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
-
-            message.channel.send('Состав "'+config.guild_tournament_channel+'": '+ members.join(', '));
-            // allowed access to command
+            //message.channel.send('Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.: ' + members.join(', '));
+            let info = null;
+            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.'; info.color=null; info.description=members.join(', ');
+            info.footer=null; info.footer_icon=null;
+            info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
+            info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
+            info.fields=null; // field['title'], field['value'], field['group'], field['insertline']
+            //client.channels.get(info.guild_channel).send({embed});
+            Belt_Send(message.channel,info);
+            //channel.send({embed});
         }
         else message.channel.send('Роли '+config.guild_tournament_channel+' не существует!');
     }
