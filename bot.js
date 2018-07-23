@@ -517,11 +517,17 @@ else if (command === 'invite' || command === 'INVITE') {
     else if (command === 'состав' && args[0] === 'турнир') {
     	let role_name = config.guild_tournament_channel;
         let role_find = message.guild.roles.find("name", role_name);
-        console.log(role_find);
+        //console.log(role_find);
         if (role_find !== null) {
             let role_members = message.guild.roles.get(role_find.id).members;
             console.log(role_members);
-            //message.send(role_);
+            if (!isArray(role_members)) return;
+            var members = [];
+            role_members.forEach(function(role_member) {
+               if (role_member.nickname === null) members[]=role_member.username; else members[]=role_member.nickname;
+            });
+
+            message.send('Состав ${config.guild_tournament_channel}:'+ members.join());
             // allowed access to command
         }
         else message.send('Роли '+config.guild_tournament_channel+' не существует!');
