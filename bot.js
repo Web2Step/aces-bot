@@ -518,9 +518,10 @@ else if (command === 'invite' || command === 'INVITE') {
     	let role_name = config.guild_tournament_channel;
         let role_find = message.guild.roles.find("name", role_name);
         console.log(role_find);
-        if (role_find.id !== false) {
-            console.log(role_find);
-            //message.send(members_role);
+        if (role_find !== null) {
+            let role_members = message.guild.roles.get(role_find.id).members;
+            console.log(role_members);
+            //message.send(role_);
             // allowed access to command
         }
         else message.send('Роли '+config.guild_tournament_channel+' не существует!');
