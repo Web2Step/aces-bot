@@ -509,11 +509,18 @@ else if (command === 'invite' || command === 'INVITE') {
     }
 
     message.channel.send(nick+' в поиске стака!');
-		console.log('поиск стака запущен..');
+	console.log('поиск стака запущен..');
 }
 // END !INVITE
 
-
+// START !СОСТАВ турнир
+    else if (command === 'состав' && args[0] === 'турнир') {
+    	let role_find = 'tournaments';
+        let members_role = message.guild.roles.find("name", role_find).members;
+        console.log(`Got ${members_role.size} members with that role. Состав: ${members_role}`);
+        message.send(members_role);
+    }
+// END !СОСТАВ
 
 });
 
