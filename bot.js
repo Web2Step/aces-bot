@@ -553,7 +553,7 @@ else if (command === 'invite' || command === 'INVITE') {
             var members = [];
             role_members.forEach(function(role_member) {
                 var guild_member=role_member;
-                console.log(guild_member+' ###');
+                //console.log(guild_member+' ###');
                 if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
             //message.channel.send('Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.: ' + members.join(', '));
@@ -562,7 +562,7 @@ else if (command === 'invite' || command === 'INVITE') {
             info.footer=null; info.footer_icon=null;
             info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
             info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
-            info.fields=null; // field['title'], field['value'], field['group'], field['insertline']
+            info.fields=[]; // field['title'], field['value'], field['group'], field['insertline']
             //client.channels.get(info.guild_channel).send({embed});
             Belt_Send(message.channel,info);
             //channel.send({embed});
