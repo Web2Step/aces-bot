@@ -513,7 +513,7 @@ else if (command === 'invite' || command === 'INVITE') {
 }
 // END !INVITE
 
-// START !СОСТАВ турнир
+// START !СОСТАВ турнира
     else if (command === 'состав' && args[0] === 'турнир') {
     	let role_name = 'tournaments';
         let role_find = message.guild.roles.find("name", role_find);
