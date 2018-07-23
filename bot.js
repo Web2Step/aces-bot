@@ -520,11 +520,12 @@ else if (command === 'invite' || command === 'INVITE') {
         //console.log(role_find);
         if (role_find !== null) {
             let role_members = message.guild.roles.get(role_find.id).members;
-            console.log(role_members);
-            if (!isArray(role_members)) return;
+            //console.log(role_members);
+            //if (!isArray(role_members)) return;
             var members = [];
             role_members.forEach(function(role_member) {
-               if (role_member.nickname === null) members.push(role_member.username); else members.push(role_member.nickname);
+                console.log(role_member+' ###');
+                if (role_member.nickname === null) members.push(role_member.username); else members.push(role_member.nickname);
             });
 
             message.send('Состав ${config.guild_tournament_channel}:'+ members.join());
