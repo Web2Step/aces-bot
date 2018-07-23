@@ -29,8 +29,7 @@ isArray = function(a) {
 function Belt_Send(channel,info) {
                 const embed = new Discord.RichEmbed();
                 //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
-                //else
-                if (info.author_name !== undefined) embed.setAuthor(info.author_name, info.author_avatar);
+                if (info.author_name !== undefined && info.author_name !== null) embed.setAuthor(info.author_name, info.author_avatar);
                 if (info.title !== undefined && info.title !== null) embed.setTitle(info.title);
                 if (info.color !== undefined) embed.setColor(info.color);
                 if (info.description !== undefined) embed.setDescription(info.description);
@@ -145,6 +144,7 @@ client.on('message', message => {
     var nick_guild = message.guild.members.get(message.author.id).nickname;
     var nick = ''; // universal nick
     var me = nick_guild;
+    var me_avatar =  message.author.avatarURL;
     if (nick_guild === null) {
       nick = nick_serv; me = nick_serv;
     } else nick = nick_guild;
@@ -550,15 +550,16 @@ else if (command === 'invite' || command === 'INVITE') {
             var role_members = message.guild.roles.get(role_find.id).members;
             //console.log(role_members);
             //if (!isArray(role_members)) return;
-            var members = [];
+            var members = []; var $members_count=0;
             role_members.forEach(function(role_member) {
                 var guild_member=role_member;
+                $members_count=$members_count + 1;
                 //console.log(guild_member+' ###');
                 if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
             //message.channel.send('Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.: ' + members.join(', '));
             let  info = {};
-            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.'; info.color='#daecd7'; info.description="``"+members.join(', ')+"``";
+            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" ['+ $members_count + ' чел.]'; info.color='#B6DB43'; info.description="``"+members.join(', ')+"``";
             info.footer='Турниры клуба'; info.footer_icon='http://smiles.lol-info.ru/aces.png';;
             info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
             info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
