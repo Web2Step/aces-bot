@@ -542,8 +542,8 @@ else if (command === 'invite' || command === 'INVITE') {
 // END !INVITE
 
 // START !СОСТАВ турнира
-    else if (command === 'состав' && args[0] === 'турнир') {
-    	let role_name = config.guild_tournament_channel;
+    else if ((command === 'состав' && args[0] === 'турнир') || (command === 'tournament')){
+    	let role_name = config.guild_tournament_role;
         let role_find = message.guild.roles.find("name", role_name);
         //console.log(role_find);
         if (role_find !== null) {
@@ -557,18 +557,20 @@ else if (command === 'invite' || command === 'INVITE') {
                 //console.log(guild_member+' ###');
                 if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
-            //message.channel.send('Состав "'+config.guild_tournament_channel+'" '+ role_members.length+' чел.: ' + members.join(', '));
+            //message.channel.send('Состав "'+config.guild_tournament_role+'" '+ role_members.length+' чел.: ' + members.join(', '));
             let  info = {};
-            info.author_name=null; info.title='Состав "'+config.guild_tournament_channel+'" ['+ $members_count + ' чел.]'; info.color='#B6DB43'; info.description="``"+members.join(', ')+"``";
+            info.author_name=null; info.title='Состав "'+config.guild_tournament_role+'" ['+ $members_count + ' чел.]'; info.color='#B6DB43'; info.description="``"+members.join(', ')+"``";
             info.footer='Турниры клуба'; info.footer_icon='http://smiles.lol-info.ru/aces.png';;
             info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
             info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
             info.fields=[]; // field['title'], field['value'], field['group'], field['insertline']
             //client.channels.get(info.guild_channel).send({embed});
-            Belt_Send(message.channel,info);
+            let channel_belt = message.channel; // вывести туда откуда запросили
+            if (command === 'tournament') channel_belt=config.guild_main_channel; // вывести на главный канал
+            Belt_Send(channel_belt,info);
             //channel.send({embed});
         }
-        else message.channel.send('Роли '+config.guild_tournament_channel+' не существует!');
+        else message.channel.send('Роли '+config.guild_tournament_role+' не существует!');
     }
 // END !СОСТАВ
 
