@@ -526,10 +526,10 @@ else if (command === 'invite' || command === 'INVITE') {
             role_members.forEach(function(role_member) {
                 var guild_member=role_member;
                 console.log(guild_member+' ###');
-                if (guild_member.nickname === undefined) members.push(guild_member.user.username); else members.push(guild_member.nickname);
+                if (guild_member.nickname === null) members.push(guild_member.user.username); else members.push(guild_member.nickname);
             });
 
-            message.channel.send('Состав ${config.guild_tournament_channel}:'+ members.join());
+            message.channel.send('Состав "'+config.guild_tournament_channel+': '+ members.join());
             // allowed access to command
         }
         else message.channel.send('Роли '+config.guild_tournament_channel+' не существует!');
