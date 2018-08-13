@@ -190,6 +190,8 @@ client.on('message', message => {
         baseRequest(options, function(error, response, body) {
             if (error) {
                 console.log(error);
+                if (error=='ESOCKETTIMEDOUT') message.reply(me + ', попробуй чуть позже.. Проблемка! :robot:');
+                else message.reply(me + ', у меня траблы!.. ['+error+'] :robot:');
             } else {
                 var info =  body;
                 var icon = 'http://ddragon.leagueoflegends.com/cdn/'+info.apiImageVersion+'/img/profileicon/'+info.profileIconId+'.png';
@@ -199,6 +201,9 @@ client.on('message', message => {
                 var active = info.active;
                 if (active)  active='В клубе';
                 else active='Не в клубе';
+                console.log('Farm Name: '+info.name);
+                // БАГ без имени?
+                if (info.name === undefined) { message.reply('Ошибка доступа.. попробуйте позднее'); return; }
 
                 const embed = new Discord.RichEmbed()
                     .setTitle("Профиль игрока: "+info.name.toUpperCase())
