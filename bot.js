@@ -190,7 +190,7 @@ client.on('message', message => {
         baseRequest(options, function(error, response, body) {
             if (error) {
                 console.log(error);
-                if (error=='ESOCKETTIMEDOUT') message.reply(me + ', попробуй чуть позже.. Проблемка! :robot:');
+                if (error == 'ESOCKETTIMEDOUT') message.reply(', попробуй чуть позже.. Проблемка! :robot:');
                 else message.reply(me + ', у меня траблы!.. ['+error+'] :robot:');
             } else {
                 var info =  body;
@@ -227,10 +227,15 @@ client.on('message', message => {
                     .addField("WinRate Step:", info.gi_winrateStep+'%', true)
                     .addField("Ранг игрока:", info.solo_tier+' '+info.solo_rank, true)
                     .addField("Серия побед:", info.gi_winstreakSeason, true)
-                    //.addField("Статус:", active, true)
-                    .addField(":star2:Достижения:", roles, false);
+                //.addField("Статус:", active, true)
 
-                if (command === 'club' || command === 'stat') embed.setImage(info.main_image);
+
+                if (command === 'club' || command === 'stat') {
+                    embed.setImage(info.main_image);
+                    embed.addField("Пентакилл:", info.gi_pentaKills, true)
+                }
+
+                embed.addField(":star2:Достижения:", roles, false);
 
                 if (info.relevant<10) {
                     var str2 = '' + message.author.username + ' - Игрока **' + nick + '** нет в Клубе! :thinking:';
