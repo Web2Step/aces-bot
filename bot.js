@@ -531,6 +531,14 @@ client.on('message', message => {
     }
 // END !RATING
 
+// START !TOPIC
+    else if (command === 'topic' || command === 'топик') {
+        message.channel.send(nick+', Топик ДНЯ:\r\n'+'http://aces8se.lol-info.ru/topic/'+Date.now()+'/api/vk-bot/cover/tmp.png');
+        console.log('поиск топика запущен..');
+    }
+// END !TOPIC
+
+
 // START !INVITE
     else if (command === 'invite' || command === 'INVITE') {
         var nick = message.guild.members.get(message.author.id).nickname;
