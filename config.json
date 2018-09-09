@@ -2,16 +2,25 @@
   "token_levoe"  : "MTg-this-IzNzU3OTA5NjA-is.not-DCeFB-a.real-r4DQlO-t0ken-qerT0",
   "prefix" : "!",
   "chan_invite" : "INVITE ME PLS!",
-  "guild_id" : "999999991231dadasdasddddas23123123123",
-  "guild_tournament_role" : "Турнир",
-  "guild_main_channel" : "398304862648926208",
-  "guild_site" : "http://aces-now.lol-info.ru",
-  "guild_site_pub" : "http://aces8se.lol-info.ru",
-  "guild_logo" : "http://smiles.lol-info.ru/aces.png",
-  "footer_logo" : "http://smiles.lol-info.ru/aces.png",
-  "footer_text" : "(c) ACES.LOL-INFO.RU CLUB",
-  "timer_check_top1": 300000,
-  "timer_check_top1_table" : "guild_bot",
-  "timer_check_top1_channel" : "398304862648926208",
-  "timer_check_top1_file" : "showchannel_top1.php"
+  "guild" : {
+    "342955899624751105":
+    {
+      "prefix":"aces",
+      "main_channel":"398304862648926208",
+      "tournament_role" : "Турнир - ТЕСТ БД",
+      "site":"http://aces-now.lol-info.ru",
+      "site_pub":"http://aces2018s9.lol-info.ru",
+      "logo":"http://smiles.lol-info.ru/aces.png",
+      "footer_logo":"http://smiles.lol-info.ru/aces.png",
+      "footer_text":"(c) ACES.LOL-INFO.RU CLUB",
+      "timer_check_top1": 300000,
+      "timer_check_top1_table" : "guild_bot",
+      "timer_check_top1_channel" : "398304862648926208",
+      "timer_check_top1_file" : "showchannel_top1.php"
+    },
+  "error" : {
+    "guild_command":"Дискорд-сервер для данной команды не определен!",
+    "notused!!!!":"http://aces-now.lol-info.ru"
+  },
+  "notused111!!!" : "dsad312312asd"
 }

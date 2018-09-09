@@ -39,37 +39,40 @@ function IsJson(str) {
 
 // ----------- FUNCTION BELT_Send ------------------------------- //
 function Belt_Send(channel,info) {
-    const embed = new Discord.RichEmbed();
-    //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
-    if (info.author_name !== undefined && info.author_name !== null) embed.setAuthor(info.author_name, info.author_avatar);
-    if (info.title !== undefined && info.title !== null) embed.setTitle(info.title);
-    if (info.color !== undefined) embed.setColor(info.color);
-    if (info.description !== undefined) embed.setDescription(info.description);
-    if (info.footer !== undefined) embed.setFooter(info.footer, info.footer_icon);
-    if (info.image !== undefined) embed.setImage(info.image);    //- ФОТКА НА ПОЛЭКРАНА!!!
-    if (info.thumbnail !== undefined) embed.setThumbnail(info.thumbnail);
-    if (info.timestamp !== undefined) embed.setTimestamp();
-    if (info.url !== undefined) embed.setURL(info.url);
+    if (info === undefined) channel.send('Нет данных из источника.. [undefined] :confused:');
+    else {
+        const embed = new Discord.RichEmbed();
+        //if (info.show_who !== false) embed.setAuthor(me + ' запрашивает..', avatar);
+        if (info.author_name !== undefined && info.author_name !== null) embed.setAuthor(info.author_name, info.author_avatar);
+        if (info.title !== undefined && info.title !== null) embed.setTitle(info.title);
+        if (info.color !== undefined) embed.setColor(info.color);
+        if (info.description !== undefined) embed.setDescription(info.description);
+        if (info.footer !== undefined) embed.setFooter(info.footer, info.footer_icon);
+        if (info.image !== undefined) embed.setImage(info.image);    //- ФОТКА НА ПОЛЭКРАНА!!!
+        if (info.thumbnail !== undefined) embed.setThumbnail(info.thumbnail);
+        if (info.timestamp !== undefined) embed.setTimestamp();
+        if (info.url !== undefined) embed.setURL(info.url);
 
-    // -------- СОЗДАТЬ СЕТКУ ЗНАЧЕНИЙ -------
-    var fields = info.fields;
-    fields.forEach(function (field) {
-        if (field['insertline'] !== false) embed.addBlankField(field['insertline_group']);
-        embed.addField(field['title'], field['value'], field['group']);
-        //console.log(field);
-    });
-    // ----------------------------------------
-    //client.channels.get(info.guild_channel).send({embed});
-    channel.send({embed});
+        // -------- СОЗДАТЬ СЕТКУ ЗНАЧЕНИЙ -------
+        var fields = info.fields;
+        if (isArray(fields)) fields.forEach(function (field) {
+            if (field['insertline'] !== false) embed.addBlankField(field['insertline_group']);
+            embed.addField(field['title'], field['value'], field['group']);
+            //console.log(field);
+        });
+        // ----------------------------------------
+        //client.channels.get(info.guild_channel).send({embed});
+        channel.send({embed});
+    }
 }
 // ----------------- FUNCTION BELT END ------------------------------ //
 
 // ----------- FUNCTION TIMER1 ------------------------------- //
-function checkTop1(arg) {
-    console.log(`Checking ${arg} ..`);
+function checkTop1(guild, arg) {
+    console.log('Checking '+guild.site+' / GID: '+arg+' ..');
     let timer_check_top1_file;
-    if (config.timer_check_top1_file>'') timer_check_top1_file = config.timer_check_top1_file;   else timer_check_top1_file = "showchannel_top1.php";
-    let url = config.guild_site+'/api/discord-bot/'+timer_check_top1_file+'?checkTop1Channel='+config.timer_check_top1_channel+'&checkTop1Table='+config.timer_check_top1_table+'&param=top1';
+    //if (guild['timer_check_top1_file']>'') timer_check_top1_file = guild['timer_check_top1_file'];   else timer_check_top1_file = "showchannel_top1.php";
+    let url = guild['site']+'/api/discord-bot/'+guild['timer_check_top1_file']+'?checkTop1Channel='+guild['timer_check_top1_channel']+'&checkTop1Table='+guild['timer_check_top1_table']+'&param=top1';
     global.getdata = 'Нет данных';
     console.log('URL TIMER: ' + url);
 
@@ -135,7 +138,13 @@ function checkTop1(arg) {
 
 client.on('ready', () => {
     console.log('I am ready!');
-    setInterval(checkTop1, config.timer_check_top1, 'top1');
+    //setInterval(checkTop1, config.timer_check_top1, 'top1');
+    // Каждой гильдии свой таймер
+    var guilds = config.guild;
+    for (var key in guilds) {
+        console.log('GID: '+key+' set interval..');
+        setInterval(checkTop1, guilds[key]['timer_check_top1'], guilds[key], 'top1: '+key);
+    };
 });
 
 client.on('message', message => {
@@ -148,6 +157,11 @@ client.on('message', message => {
     if (message.content === '!ping') {
         message.reply('!pong');
     }
+
+
+    // --- На каком сервере было сообщение ----------
+    const guild_id = message.guild.id;
+    const guild = config.guild[guild_id]; // взять настройки конкретного клуба
 
     // --- Аргументы и команды ----------
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
@@ -171,14 +185,107 @@ client.on('message', message => {
     }
     // ------------- FORCE COMMAND END ----------------- //
 
+
+    // ------------------- START !META ----------------------
+    else if (command === 'meta' || command === 'мета') {
+        //var param_send = null;
+        var param_send = 'source='+args[0];
+        //if ((command === 'bad') || (command === 'best')) param_send=args[1]; else param_send=args[0];
+        //if  (param_send === null) param_send=0;
+        //console.log('0-'+args[0]+'1-'+args[1]);
+
+        var url = '';
+        //if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = config.guild_site+'/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        //else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = config.guild_site+'/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        url='http://cp.lol-info.ru/meta.php?'+param_send+'&json=true&mingames=250';
+        console.log('URL META: ' + url);
+
+        const request = require('request');
+        var baseRequest = request.defaults({
+            pool: false,
+            agent: false,
+            jar: true,
+            json: true,
+            timeout: 5000,
+            gzip: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        var options = {
+            url: url,
+            method: 'GET'
+        };
+        baseRequest(options, function(error, response, body) {
+            if (error) {
+                console.log(error);
+            } else {
+                var info =  body; // из тега БАДИ взять инфу
+                console.log('BODY JSON: '+info);
+                let channel_belt = message.channel; // вывести туда откуда запросили
+                //if (command === 'tournament') channel_belt= message.guild.channels.get(config.guild_main_channel); // вывести на главный канал
+                Belt_Send(channel_belt,info);
+                console.log(info);
+            }
+        });
+    }
+    // ---------------- END !META --------------------------- //
+
+    // ------------------- START !COUNTERPICK ----------------------
+    else if (command === 'контрапик' || command === 'counterpick' || command === 'кп' || command === 'cp') {
+        var param_send = 'champion='+encodeURI(args[0])+'&source='+encodeURI(args[1])+'&line='+encodeURI(args[2]);
+        //if ((command === 'bad') || (command === 'best')) param_send=args[1]; else param_send=args[0];
+        var url = '';
+        //if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = config.guild_site+'/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        //else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = config.guild_site+'/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        url='http://cp.lol-info.ru/index.php?'+param_send+'&json=true&mingames=250';
+        console.log('URL COUNTERPICK: ' + url);
+
+        const request = require('request');
+        var baseRequest = request.defaults({
+            pool: false,
+            agent: false,
+            jar: true,
+            json: true,
+            timeout: 5000,
+            gzip: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        var options = {
+            url: url,
+            method: 'GET'
+        };
+        baseRequest(options, function(error, response, body) {
+            if (error) {
+                console.log(error);
+            } else {
+                var info =  body; // из тега БАДИ взять инфу
+                console.log('BODY JSON: '+info);
+                let channel_belt = message.channel; // вывести туда откуда запросили
+                //if (command === 'tournament') channel_belt= message.guild.channels.get(config.guild_main_channel); // вывести на главный канал
+                Belt_Send(channel_belt,info);
+                console.log(info);
+            }
+        });
+    }
+    // ---------------- END !COUNTERPICK --------------------------- //
+
+
     // ------------- FARM COMMAND BEGIN ----------------- //
-    if (command === 'farm' || command === 'club' || command === 'stat') {
+    else if (command === 'farm' || command === 'club' || command === 'stat') {
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+        // --------
         let nick2 = param_str;
         if (nick2.length > 2) {
             nick_url=encodeURI(nick2);
             nick = nick2;
         }
-        var url = config.guild_site+'/api/discord-bot/getfarm.php?name='+nick_url+'&param='+args[0];
+        var url = guild['site']+'/api/discord-bot/getfarm.php?name='+nick_url+'&param='+args[0];
         global.getdata = 'Нет данных';
 
         const request = require('request');
@@ -207,7 +314,7 @@ client.on('message', message => {
             } else {
                 console.log('GET URL FARM: '+url);
                 var info =  body;
-                if (typeof info == 'object') { } else { message.reply(' Игрока **' + nick + '** нет в Клубе!? :thinking:'); console.log('Error URL: '+url); return; }
+                if (typeof info == 'object') { } else { message.reply(' Игрока **' + nick + '** нет в Клубе!? :thinking:'); console.log('Error URL: '+url); console.log('Error TEXT: '+info); return; }
                 var icon = 'http://ddragon.leagueoflegends.com/cdn/'+info.apiImageVersion+'/img/profileicon/'+info.profileIconId+'.png';
                 var avatar = message.author.avatarURL;
                 var roles = info.roles;
@@ -224,7 +331,7 @@ client.on('message', message => {
                     .setAuthor(me + ' запрашивает..', avatar)
                     .setColor(0x00AE86)
                     .setDescription("Клубные характеристики игрока")
-                    .setFooter(config.footer_text, config.footer_logo)
+                    .setFooter(guild.footer_text, guild.footer_logo)
                     //.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
                     .setThumbnail(icon)
                     .setTimestamp()
@@ -264,12 +371,15 @@ client.on('message', message => {
 
     // START !BEST
     else if ((command === 'best' || command === 'BEST') && (args[0] === undefined)) {
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+
         let nick2 = param_str;
         if (nick2.length > 2) {
             nick_url=encodeURI(nick2);
             nick = nick2;
         }
-        var url = config.guild_site+'/api/discord-bot/getbest.php?name='+nick_url;
+        var url = guild['site']+'/api/discord-bot/getbest.php?name='+nick_url;
         global.getdata = 'Нет данных';
 
         const request = require('request');
@@ -322,12 +432,15 @@ client.on('message', message => {
 
 // START !BAD
     else if ((command === 'bad' || command === 'BAD') && (args[0] === undefined)) {
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+
         let nick2 = param_str;
         if (nick2.length > 2) {
             nick_url=encodeURI(nick2);
             nick = nick2;
         }
-        var url = config.guild_site+'/api/discord-bot/getbad.php?name='+nick_url;
+        var url = guild['site']+'/api/discord-bot/getbad.php?name='+nick_url;
         global.getdata = 'Нет данных';
 
         const request = require('request');
@@ -382,16 +495,19 @@ client.on('message', message => {
 
 // START !BAD SEASON OR STEP
     else if (((command === 'bad' || command === 'best') && (args[0] === 'season' || args[0] === 'step')) || (command === 'badseason' || command === 'badstep' || command === 'beststep' || command === 'bestseason')) {
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+
         var param_send = null;
         if ((command === 'bad') || (command === 'best')) param_send=args[1]; else param_send=args[0];
         if  (param_send === null) param_send=0;
         //console.log('0-'+args[0]+'1-'+args[1]);
 
         var url = '';
-        if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = config.guild_site+'/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
-        else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = config.guild_site+'/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
-        else if (((command==='best')&&(args[0]==='step')) || (command==='beststep')) url = config.guild_site+'/api/discord-bot/getbeststep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
-        else if (((command==='best')&&(args[0]==='season')) || (command==='bestseason')) url = config.guild_site+'/api/discord-bot/getbestseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        if (((command==='bad')&&(args[0]==='season')) || (command==='badseason')) url = guild['site']+'/api/discord-bot/getbadseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        else if (((command==='bad')&&(args[0]==='step')) || (command==='badstep')) url = guild['site']+'/api/discord-bot/getbadstep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        else if (((command==='best')&&(args[0]==='step')) || (command==='beststep')) url = guild['site']+'/api/discord-bot/getbeststep.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
+        else if (((command==='best')&&(args[0]==='season')) || (command==='bestseason')) url = guild['site']+'/api/discord-bot/getbestseason.php?name='+nick_url+'&stage='+args[0]+'&param='+param_send;
         global.getdata = 'Нет данных';
         console.log('URL: ' + url);
 
@@ -447,13 +563,16 @@ client.on('message', message => {
 
 // START !RATING
     else	if (command === 'rating' || command === 'RATING') {
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+
         var nick = message.guild.members.get(message.author.id).nickname;
         var me = message.guild.members.get(message.author.id).nickname;
         var params_url = encodeURI(param_str);
         if (param_str.length > 2) {
             params=encodeURI(nick);
         }
-        var url = config.guild_site+'/api/discord-bot/getrating.php?name='+nick_url+'&param2='+params_url;
+        var url = guild['site']+'/api/discord-bot/getrating.php?name='+nick_url+'&param2='+params_url;
         global.getdata = 'Нет данных';
 
         const request = require('request');
@@ -480,7 +599,7 @@ client.on('message', message => {
             } else {
                 var info =  body;
                 console.log(body);
-                var icon = config.guild_logo;
+                var icon = guild.guild_logo;
                 var avatar = message.author.avatarURL;
 
                 const embed = new Discord.RichEmbed()
@@ -488,7 +607,7 @@ client.on('message', message => {
                     .setAuthor(me + ' запрашивает..', avatar)
                     .setColor(0x00CE26)
                     .setDescription("Статистика по клубам!")
-                    .setFooter(config.footer_text, config.footer_logo)
+                    .setFooter(guild.footer_text, guild.footer_logo)
                     //.setImage(mainpic)    //- ФОТКА НА ПОЛЭКРАНА!!!
                     .setThumbnail(icon)
                     .setTimestamp()
@@ -547,7 +666,9 @@ client.on('message', message => {
 
 // START !TOPIC
     else if (command === 'topic' || command === 'топик') {
-        message.channel.send(nick+', Топик ДНЯ:\r\n'+config.guild_site_pub+'/topic/'+Date.now()+'/api/vk-bot/cover/tmp.png');
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+        message.channel.send(nick+', Топик ДНЯ:\r\n'+guild['site_pub']+'/topic/'+Date.now()+'/api/vk-bot/cover/tmp.png');
         console.log('поиск топика запущен..');
     }
 // END !TOPIC
@@ -584,7 +705,9 @@ client.on('message', message => {
 
 // START !СОСТАВ турнира
     else if ((command === 'состав' && args[0] === 'турнир') || (command === 'tournament')){
-        let role_name = config.guild_tournament_role;
+        // ----- Конфиг сервера команды отсутствует ?! --------
+        if (guild == undefined) { console.log('Guild not in config!: '+guild); message.reply(config.error['guild_command']); return; }
+        let role_name = guild.tournament_role;
         let role_find = message.guild.roles.find("name", role_name);
         //console.log(role_find);
         if (role_find !== null) {
@@ -600,18 +723,18 @@ client.on('message', message => {
             });
             //message.channel.send('Состав "'+config.guild_tournament_role+'" '+ role_members.length+' чел.: ' + members.join(', '));
             let  info = {};
-            info.author_name=null; info.title='Состав "'+config.guild_tournament_role+'" ['+ $members_count + ' чел.]'; info.color='#B6DB43'; info.description="``"+members.join(', ')+"``";
-            info.footer='Турниры клуба'; info.footer_icon=config.guild_logo;
+            info.author_name=null; info.title='Состав "'+guild.tournament_role+'" ['+ $members_count + ' чел.]'; info.color='#B6DB43'; info.description="``"+members.join(', ')+"``";
+            info.footer='Турниры клуба'; info.footer_icon=guild.logo;
             info.image=null;    //- ФОТКА НА ПОЛЭКРАНА!!!
             info.thumbnail='http://lol-info.ru/images/bots/aces/tournament.png'; info.timestamp=true; info.url=null;
             info.fields=[]; // field['title'], field['value'], field['group'], field['insertline']
             //client.channels.get(info.guild_channel).send({embed});
             let channel_belt = message.channel; // вывести туда откуда запросили
-            if (command === 'tournament') channel_belt= message.guild.channels.get(config.guild_main_channel); // вывести на главный канал
+            if (command === 'tournament') channel_belt= message.guild.channels.get(guild['main_channel']); // вывести на главный канал
             Belt_Send(channel_belt,info);
             //channel.send({embed});
         }
-        else message.channel.send('Роли '+config.guild_tournament_role+' не существует!');
+        else message.channel.send('Роли '+guild.tournament_role+' не существует!');
     }
 // END !СОСТАВ
 
